@@ -19,3 +19,19 @@ when "java"
  else
   puts "Хм, интересный выбор, но скоро будет Ruby!"
 end
+
+#============================================
+
+puts "Введите команду на языке Ruby:"
+rb_comd = STDIN.gets.chomp 
+
+begin
+  result = eval(rb_comd)
+  puts "Результат команды Ruby: #{result}"
+end
+
+puts "Введите команду для операционной системы:"
+os_comd = STDIN.gets.chomp
+
+system(os_comd)
+puts "Команда ОС выполнена успешно!"
