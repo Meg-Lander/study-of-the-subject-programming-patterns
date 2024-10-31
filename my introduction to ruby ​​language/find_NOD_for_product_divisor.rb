@@ -1,24 +1,19 @@
-def is_prime(num)
-  if num <= 1
-    return false
-  (2..Math.sqrt(num)).each do |i|
-    if num % i == 0
-      return false 
-  end
-  true
-end
+def product_of_digits_no_5(num)
+  prod = 1
+  
+  while num > 0
+    digit = num % 10
+    num = num / 10
 
-def max_prime_divisor(num)
-  max_pr = -1
-  (2..(num)).each do |i|
-    if num % i == 0 && is_prime(i)
-      max_pr = i
+    if digit % 5 != 0
+      prod *= digit
     end
   end
-  max_pr
+
+  prod
 end
 
-puts "Введите число: "
+puts "Введите число:"
 num = gets.to_i
-result = max_prime_divisor(num)
-puts "Максимальный простой делитель числа #{num} — это #{result}" if result != -1
+result = product_of_digits_no_5(num)
+puts "Произведение цифр числа, не делящихся на 5: #{result}"
