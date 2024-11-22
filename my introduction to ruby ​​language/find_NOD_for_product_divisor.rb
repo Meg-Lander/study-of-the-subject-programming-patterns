@@ -35,7 +35,8 @@ def find_NOD_for_product_divisor(num)
   prod_of_dig = product_of_digits(num)
   
   if max_no_prime.nil?
-    return "Не найден нечётный непростой делитель"
+    puts "Не найден нечётный непростой делитель"
+    return false
   end
   
   if prod_of_dig > max_no_prime
@@ -51,8 +52,7 @@ puts "Введите число:"
 num = gets.to_i
 result = find_NOD_for_product_divisor(num)
 
-if result.is_a?(String)
-  puts result
+if result false
 else
   puts "НОД между максимальным нечётным непростым делителем и произведением цифр числа: #{result}"
 end
