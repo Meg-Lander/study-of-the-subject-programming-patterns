@@ -1,16 +1,17 @@
 class Student
 
 
-  def initialize(surname:, name:, middle_name:, id: nil, phone: nil, telegram: nil, email: nil, git: nil)
+   def initialize(params)
     
-    @surname = surname
-    @name = name
-    @middle_name = middle_name
-    @id = id
-    @phone = phone
-    @telegram = telegram
-    @email = email
-    @git = git
+    @surname = params[:surname]
+    @name = params[:name]
+    @middle_name = params[:middle_name]
+    @id = params[:id]
+    @phone = params[:phone]
+    @telegram = params[:telegram]
+    @email = params[:email]
+    @git = params[:git]
+
   end
 
   attr_accessor :id, :surname, :name, :middle_name, :phone, :telegram, :email, :git
