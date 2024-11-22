@@ -2,11 +2,16 @@ class Student
 
 
    def initialize(params)
-    
+
     @surname = params[:surname]
     @name = params[:name]
     @middle_name = params[:middle_name]
     @id = params[:id]
+
+    if params[:phone] && !Student.phone_valid?(params[:phone])
+      raise ArgumentError, "Некорректный телефонный номер: #{params[:phone]}"
+    end
+
     @phone = params[:phone]
     @telegram = params[:telegram]
     @email = params[:email]
@@ -14,6 +19,10 @@ class Student
 
   end
 
+  def self.phone_valid?(phone)
+    phone.to_s.match?(/^(\d{11}|\+\d{11})$/)
+  end
+  
   attr_accessor :id, :surname, :name, :middle_name, :phone, :telegram, :email, :git
 
 
