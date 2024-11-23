@@ -52,7 +52,7 @@ puts "Введите число:"
 num = gets.to_i
 result = find_NOD_for_product_divisor(num)
 
-if result false
+if result == false
 else
   puts "НОД между максимальным нечётным непростым делителем и произведением цифр числа: #{result}"
 end
