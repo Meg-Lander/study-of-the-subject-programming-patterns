@@ -35,6 +35,23 @@ class Student
     validate
   end
 
+  attr_accessor :id, :surname, :name, :middle_name, :git
+  attr_reader :phone, :telegram, :email
+
+  # Метод для изменения контактов
+  def set_contacts(contacts = {})
+    if contacts.key?(:phone)
+      @phone = validate_phone(contacts[:phone])
+    end
+
+    if contacts.key?(:telegram)
+      @telegram = validate_telegram(contacts[:telegram])
+    end
+
+    if contacts.key?(:email)
+      @email = validate_email(contacts[:email])
+    end
+  end
 
 
   # Проверки регулярками
@@ -81,7 +98,6 @@ class Student
     end
   end
 
-  attr_accessor :id, :surname, :name, :middle_name, :phone, :telegram, :email, :git
 
 
 
