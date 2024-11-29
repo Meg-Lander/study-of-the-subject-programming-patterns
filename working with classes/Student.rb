@@ -54,6 +54,36 @@ class Student
   end
 
 
+ def initials
+    "#{@surname} #{name[0]}.#{middle_name[0]}."
+  end
+
+  def contact_info
+    if !@phone.nil? && !@phone.strip.empty?
+      "Телефон: #{@phone}"
+    elsif !@telegram.nil? && !@telegram.strip.empty?
+      "Телеграм: #{@telegram}"
+    elsif !@email.nil? && !@email.strip.empty?
+      "Почта: #{@email}"
+    else
+      'Нет контактной информации'
+    end
+  end
+
+  def git_info
+    if !@git.nil? && !@git.strip.empty?
+      @git
+    else
+      'Нет GitHub'
+  end
+
+  # Метод который возвращает краткую информацию о студенте
+  def getInfo
+    "#{initials}; GitHub: #{git_info}; Связь: #{contact_info}"
+  end
+
+
+
   # Проверки регулярками
   def self.id_valid?(id)
     id.to_s.match?(/^([0-9])$/)
