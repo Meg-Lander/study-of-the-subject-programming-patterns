@@ -1,10 +1,12 @@
-class StudentShort
-  
-  attr_reader :id, :surname_initials, :git, :contact
+require_relative 'Person'
+
+class StudentShort < Person
+
+  attr_reader :surname_initials, :contact
 
   def initialize(student_or_id, info = nil)
 
-    # Конструктор 1: принимает объект Student
+    # Конструктор 1: Используем объект Student
     if student_or_id.is_a?(Student)
       student = student_or_id
       @id = student.id
@@ -28,6 +30,8 @@ class StudentShort
     end
   end
 
-
-
+  def getInfo
+    "#{surname_initials}; GitHub: #{git_info}; Связь: #{contact_info}"
+  end
+  
 end
