@@ -32,10 +32,14 @@ class Student
     end
     @git = params[:git]
 
+    validate
   end
 
+
+
+  # Проверки регулярками
   def self.id_valid?(id)
-    id.to_s.match?(/^\d+$/)
+    id.to_s.match?(/^([0-9])$/)
   end
 
   def self.phone_valid?(phone)
@@ -55,6 +59,27 @@ class Student
   end
 
 
+  # Проверка на наличие гита
+  def git_present?
+    !@git.nil? && !@git.strip.empty?
+  end
+
+  # Проверка на наличие хотя бы одного контакта
+  def has_contact_info?
+    (!@phone.nil? && !@phone.strip.empty?) ||
+    (!@telegram.nil? && !@telegram.strip.empty?) ||
+    (!@email.nil? && !@email.strip.empty?)
+  end
+
+
+  def validate
+    if !git_present?
+      raise ArgumentError, 'Не указан GitHub!'
+    end
+    if !has_contact_info?
+      raise ArgumentError, 'Отсутствует любой контакт для связи!'
+    end
+  end
 
   attr_accessor :id, :surname, :name, :middle_name, :phone, :telegram, :email, :git
 
