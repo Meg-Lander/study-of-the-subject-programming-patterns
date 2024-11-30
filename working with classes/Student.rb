@@ -1,7 +1,7 @@
 require_relative 'Person'
 
 class Student < Person
-  attr_accessor :surname, :name, :middle_name
+  attr_reader :surname, :name, :middle_name
 
   def initialize(params)
     super(params)
