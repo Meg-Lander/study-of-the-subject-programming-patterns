@@ -12,8 +12,15 @@ class Person
     validate
   end
 
+  private_class_method :git_present?
+  private_class_method :has_contact_info?
+
 
   # Проверки регулярками
+  def self.id_valid?(id)
+    id.to_s.match?(/^([0-9])$/)
+  end
+
   def self.git_valid?(git)
     git.to_s.match?(/\Agithub\.com\/[\w-]+\z/)
   end
@@ -62,11 +69,11 @@ class Person
   def validate
     raise ArgumentError, 'Не указан GitHub!' unless git_present?
     raise ArgumentError, 'Отсутствует любой контакт для связи!' unless has_contact_info?
-    raise ArgumentError, "Некорректный id: #{@id}" if @id && !id_valid?(@id)
-    raise ArgumentError, "Некорректный телефонный номер: #{@phone}" if @phone && !phone_valid?(@phone)
-    raise ArgumentError, "Некорректный Telegram: #{@telegram}" if @telegram && !telegram_valid?(@telegram)
-    raise ArgumentError, "Некорректный Email: #{@email}" if @email && !email_valid?(@email)
-    raise ArgumentError, "Некорректный GitHub: #{@git}" if @git && !git_valid?(@git)
+    raise ArgumentError, "Некорректный id: #{@id}" if @id && !Person.id_valid?(@id)
+    raise ArgumentError, "Некорректный телефонный номер: #{@phone}" if @phone && !Person.phone_valid?(@phone)
+    raise ArgumentError, "Некорректный Telegram: #{@telegram}" if @telegram && !Person.telegram_valid?(@telegram)
+    raise ArgumentError, "Некорректный Email: #{@email}" if @email && !Person.email_valid?(@email)
+    raise ArgumentError, "Некорректный GitHub: #{@git}" if @git && !Person.git_valid?(@git)
   end
   
 

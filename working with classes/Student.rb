@@ -12,6 +12,8 @@ class Student < Person
 
   end
 
+  private_class_method :initials
+  
   def initials
     "#{@surname} #{@name[0]}.#{@middle_name[0]}."
   end
