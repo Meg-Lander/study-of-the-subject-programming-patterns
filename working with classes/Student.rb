@@ -23,14 +23,26 @@ class Student < Person
   end
   
   def show_inf
-    puts "id: #{@id} \n Фамилия: #{@surname}\nИмя: #{@name}; \n Отчество: #{@middle_name}; \n Номер телефона: #{@phone}; \n Телеграм: #{@telegram}; \n Почта: #{@email}; GitHub: #{@git}"
+    "#{@id} #{@surname} #{@middle_name} #{@name}\nGit: #{@git}\nДанные для связи:\nНомер телефона: #{@phone}\nТелеграм: #{@telegram}\nEmail: #{@email}\n\n"
   end
 
-  def reset_full_name(params)
-    @surname = params[:surname]
-    @name = params[:name]
-    @middle_name = params[:middle_name]
+  def self.name_valid?(name)
+    name.to_s.match?(/\A[А-ЯA-Z][а-яa-z]{1,}\z/)
   end
 
+  def surname=(names)
+    raise ArgumentError, 'Некорректный ID' unless self.name_valid?(names)
+    @surname = names
+  end
+
+  def middle_name=(names)
+    raise ArgumentError, 'Некорректный ID' unless self.name_valid?(names)
+    @middle_name = names
+  end
+
+  def name=(names)
+    raise ArgumentError, 'Некорректный ID' unless self.name_valid?(names)
+    @name = names
+  end
 
 end

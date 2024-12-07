@@ -43,16 +43,6 @@ class Person
   end
   
 
-
-
-  def reset_git(new_git)
-    if self.class.git_valid?(new_git)
-      @git = new_git
-    else
-      raise ArgumentError, "Некорректный GitHub: #{new_git}"
-    end
-  end
-
   def set_contacts(contacts = {})
     if contacts.key?(:phone)
       self.phone = contacts[:phone]
@@ -67,6 +57,10 @@ class Person
     end
   end
 
+  def git=(value)
+    raise ArgumentError, 'Некорректный GitHub' unless self.class.git_valid?(value)
+    @git = value
+  end
 
 
 
@@ -92,11 +86,6 @@ class Person
   def id=(value)
     raise ArgumentError, 'Некорректный ID' unless self.class.id_valid?(value)
     @id = value
-  end
-
-  def git=(value)
-    raise ArgumentError, 'Некорректный GitHub' unless self.class.git_valid?(value)
-    @git = value
   end
 
   def phone=(value)
