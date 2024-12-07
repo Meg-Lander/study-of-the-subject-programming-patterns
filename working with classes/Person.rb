@@ -1,20 +1,19 @@
 class Person
 
-  attr_reader :id, :git, :phone, :telegram, :email
+  attr_reader :git, :phone, :telegram, :email
 
-  def initialize(params)
-    @id = params[:id]
-    @git = params[:git]
-    @phone = params[:phone]
-    @telegram = params[:telegram]
-    @email = params[:email]
-    
-    validate
+   def initialize(params)
+    self.id = params[:id] if params[:id]
+    self.git = params[:git] if params[:git]
+    self.phone = params[:phone] if params[:phone]
+    self.telegram = params[:telegram] if params[:telegram]
+    self.email = params[:email] if params[:email]
   end
 
-  private_class_method :git_present?
-  private_class_method :has_contact_info?
 
+  def id
+    @id
+  end
 
   # Проверки регулярками
   def self.id_valid?(id)
@@ -42,44 +41,34 @@ class Person
   def git_present?
     !@git.nil? && !@git.strip.empty?
   end
+  
 
-  # Проверка на наличие хотя бы одного контакта
-  def has_contact_info?
-    !@phone.nil? && !@phone.strip.empty? || 
-    !@telegram.nil? && !@telegram.strip.empty? || 
-    !@email.nil? && !@email.strip.empty?
+
+
+  def reset_git(new_git)
+    if self.class.git_valid?(new_git)
+      @git = new_git
+    else
+      raise ArgumentError, "Некорректный GitHub: #{new_git}"
+    end
   end
-
-
 
   def set_contacts(contacts = {})
     if contacts.key?(:phone)
-      @phone = validate_phone(contacts[:phone])
+      self.phone = contacts[:phone]
     end
 
     if contacts.key?(:telegram)
-      @telegram = validate_telegram(contacts[:telegram])
+      self.telegram = contacts[:telegram]
     end
 
     if contacts.key?(:email)
-      @email = validate_email(contacts[:email])
+      self.email = contacts[:email]
     end
   end
 
-  def validate
-    raise ArgumentError, 'Не указан GitHub!' unless git_present?
-    raise ArgumentError, 'Отсутствует любой контакт для связи!' unless has_contact_info?
-    raise ArgumentError, "Некорректный id: #{@id}" if @id && !Person.id_valid?(@id)
-    raise ArgumentError, "Некорректный телефонный номер: #{@phone}" if @phone && !Person.phone_valid?(@phone)
-    raise ArgumentError, "Некорректный Telegram: #{@telegram}" if @telegram && !Person.telegram_valid?(@telegram)
-    raise ArgumentError, "Некорректный Email: #{@email}" if @email && !Person.email_valid?(@email)
-    raise ArgumentError, "Некорректный GitHub: #{@git}" if @git && !Person.git_valid?(@git)
-  end
-  
 
-  def git_info
-    @git.nil? || @git.strip.empty? ? 'Нет GitHub' : @git
-  end
+
 
   # Методы для отображения информации
   def contact_info
@@ -94,5 +83,36 @@ class Person
     end
   end
 
+  def git_info
+    @git.nil? || @git.strip.empty? ? 'Нет GitHub' : @git
+  end
+
+  private
+
+  def id=(value)
+    raise ArgumentError, 'Некорректный ID' unless self.class.id_valid?(value)
+    @id = value
+  end
+
+  def git=(value)
+    raise ArgumentError, 'Некорректный GitHub' unless self.class.git_valid?(value)
+    @git = value
+  end
+
+  def phone=(value)
+    raise ArgumentError, 'Некорректный номер телефона' unless self.class.phone_valid?(value)
+    @phone = value
+  end
+
+  def telegram=(value)
+    raise ArgumentError, 'Некорректный Telegram' unless self.class.telegram_valid?(value)
+    @telegram = value
+  end
+
+  def email=(value)
+    raise ArgumentError, 'Некорректный email' unless self.class.email_valid?(value)
+    @email = value
+  end
 
 end
+

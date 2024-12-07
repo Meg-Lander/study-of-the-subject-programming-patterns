@@ -25,6 +25,10 @@ class StudentShort < Person
       contact: parts[2].sub('Связь: ', '').strip
     )
   end
+
+  def reset_contact(new_contact)
+    @contact = new_contact
+  end
   
   private_class_method :new
   private
@@ -35,5 +39,5 @@ class StudentShort < Person
     @git = params[:git]
     @contact = params[:contact]
   end
-  
+
 end

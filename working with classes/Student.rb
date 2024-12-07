@@ -23,14 +23,14 @@ class Student < Person
   end
   
   def show_inf
-    puts "id: #{@id}"
-    puts "Фамилия: #{@surname}"
-    puts "Имя: #{@name}"
-    puts "Отчество: #{@middle_name}"
-    puts "Номер телефона: #{@phone}"
-    puts "Телеграм: #{@telegram}"
-    puts "Почта: #{@email}"
-    puts "GitHub: #{@git}"
+    puts "id: #{@id} \n Фамилия: #{@surname}\nИмя: #{@name}; \n Отчество: #{@middle_name}; \n Номер телефона: #{@phone}; \n Телеграм: #{@telegram}; \n Почта: #{@email}; GitHub: #{@git}"
   end
+
+  def reset_full_name(params)
+    @surname = params[:surname]
+    @name = params[:name]
+    @middle_name = params[:middle_name]
+  end
+
 
 end
