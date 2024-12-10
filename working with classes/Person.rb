@@ -10,9 +10,29 @@ class Person
     self.email = params[:email] if params[:email]
   end
 
+  def id=(value)
+    raise ArgumentError, 'Некорректный ID' unless self.class.id_valid?(value)
+    @id = value
+  end
 
-  def id
-    @id
+  def phone=(value)
+    raise ArgumentError, 'Некорректный номер телефона' unless self.class.phone_valid?(value)
+    @phone = value
+  end
+
+  def telegram=(value)
+    raise ArgumentError, 'Некорректный Telegram' unless self.class.telegram_valid?(value)
+    @telegram = value
+  end
+
+  def email=(value)
+    raise ArgumentError, 'Некорректный email' unless self.class.email_valid?(value)
+    @email = value
+  end
+
+  def git=(value)
+    raise ArgumentError, 'Некорректный GitHub' unless self.class.git_valid?(value)
+    @git = value
   end
 
   # Проверки регулярками
@@ -57,23 +77,18 @@ class Person
     end
   end
 
-  def git=(value)
-    raise ArgumentError, 'Некорректный GitHub' unless self.class.git_valid?(value)
-    @git = value
-  end
-
 
 
   # Методы для отображения информации
   def contact_info
-    if !@phone.nil? && !@phone.strip.empty?
+    if !@phone.nil? && !@ёphone.strip.empty?
       "Телефон: #{@phone}"
     elsif !@telegram.nil? && !@telegram.strip.empty?
       "Телеграм: #{@telegram}"
     elsif !@email.nil? && !@email.strip.empty?
       "Почта: #{@email}"
     else
-      'Нет контактной информации'
+      nil
     end
   end
 
@@ -81,27 +96,5 @@ class Person
     @git.nil? || @git.strip.empty? ? 'Нет GitHub' : @git
   end
 
-  private
-
-  def id=(value)
-    raise ArgumentError, 'Некорректный ID' unless self.class.id_valid?(value)
-    @id = value
-  end
-
-  def phone=(value)
-    raise ArgumentError, 'Некорректный номер телефона' unless self.class.phone_valid?(value)
-    @phone = value
-  end
-
-  def telegram=(value)
-    raise ArgumentError, 'Некорректный Telegram' unless self.class.telegram_valid?(value)
-    @telegram = value
-  end
-
-  def email=(value)
-    raise ArgumentError, 'Некорректный email' unless self.class.email_valid?(value)
-    @email = value
-  end
 
 end
-

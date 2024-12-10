@@ -11,19 +11,17 @@ class Student < Person
     @middle_name = params[:middle_name]
 
   end
-
-  private_class_method :initials
   
   def initials
     "#{@surname} #{@name[0]}.#{@middle_name[0]}."
   end
 
-  def getInfo
+  def get_initials_contact
     "#{initials}; GitHub: #{git_info}; Связь: #{contact_info}"
   end
   
-  def show_inf
-    "#{@id} #{@surname} #{@middle_name} #{@name}\nGit: #{@git}\nДанные для связи:\nНомер телефона: #{@phone}\nТелеграм: #{@telegram}\nEmail: #{@email}\n\n"
+  def to_s
+    "#{@id} #{@surname} #{@name} #{@middle_name}\nGit: #{@git}\nДанные для связи:\nНомер телефона: #{@phone}\nТелеграм: #{@telegram}\nEmail: #{@email}\n\n"
   end
 
   def self.name_valid?(name)

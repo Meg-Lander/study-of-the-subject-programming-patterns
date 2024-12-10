@@ -29,9 +29,13 @@ class StudentShort < Person
   def reset_contact(new_contact)
     @contact = new_contact
   end
+
+  def to_s
+    "#{@id} #{@surname_initials} #{@git} #{@contact}"
+  end
+
   
   private_class_method :new
-  private
 
   def initialize(params)
     @id = params[:id]
