@@ -15,20 +15,6 @@ class Person
     @id = value
   end
 
-  def phone=(value)
-    raise ArgumentError, 'Некорректный номер телефона' unless self.class.phone_valid?(value)
-    @phone = value
-  end
-
-  def telegram=(value)
-    raise ArgumentError, 'Некорректный Telegram' unless self.class.telegram_valid?(value)
-    @telegram = value
-  end
-
-  def email=(value)
-    raise ArgumentError, 'Некорректный email' unless self.class.email_valid?(value)
-    @email = value
-  end
 
   def git=(value)
     raise ArgumentError, 'Некорректный GitHub' unless self.class.git_valid?(value)
@@ -77,11 +63,9 @@ class Person
     end
   end
 
-
-
   # Методы для отображения информации
   def contact_info
-    if !@phone.nil? && !@ёphone.strip.empty?
+    if !@phone.nil? && !@phone.strip.empty?
       "Телефон: #{@phone}"
     elsif !@telegram.nil? && !@telegram.strip.empty?
       "Телеграм: #{@telegram}"
@@ -92,9 +76,20 @@ class Person
     end
   end
 
-  def git_info
-    @git.nil? || @git.strip.empty? ? 'Нет GitHub' : @git
+  private
+  def phone=(value)
+    raise ArgumentError, 'Некорректный номер телефона' unless self.class.phone_valid?(value)
+    @phone = value
   end
 
+  def telegram=(value)
+    raise ArgumentError, 'Некорректный Telegram' unless self.class.telegram_valid?(value)
+    @telegram = value
+  end
+
+  def email=(value)
+    raise ArgumentError, 'Некорректный email' unless self.class.email_valid?(value)
+    @email = value
+  end
 
 end
