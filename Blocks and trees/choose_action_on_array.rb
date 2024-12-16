@@ -10,8 +10,27 @@ end
 def global_maximum?(array, index)
   raise ArgumentError, "Индекс выходит за пределы массива" if index >= array.size
   element = array[index]
-  array.all? { |num| num <= element } # Проверяем, что все элементы <= текущего
+  array.all? { |num| num <= element }
 end
+
+def local_minimum?(array, index)
+  raise ArgumentError, "Индекс выходит за пределы массива" if index < 0 || index > array.size
+  if index == 0
+    if array[index] < array[index + 1]
+      return true
+    end
+    false
+  elsif index == array.size - 1
+    if array[index] < array[index - 2]
+      return true
+    end
+    false
+  else
+  element = array[index]
+  [array[index - 1], array[index + 1]].all? { |x| x > element }
+  end
+end
+
 
 filename = "numbers.txt"
 array, index = read_from_file(filename)
@@ -19,6 +38,7 @@ array, index = read_from_file(filename)
 loop do
   puts "\nВыберите задачу:"
   puts "1. Проверка на глобальный максимум"
+  puts "2. Проверка на локальный минимум"
   puts "2. Выход"
   choice = gets.to_i
 
@@ -30,10 +50,16 @@ loop do
       else
         puts "Элемент по индексу #{index} не является глобальным максимумом."
       end
-    rescue ArgumentError => e
-      puts "Ошибка: #{e.message}"
     end
   when 2
+    begin
+      if local_minimum?(array, index)
+        puts "Элемент по индексу #{index} является локальным минимумом."
+      else
+        puts "Элемент по индексу #{index} не является локальным минимумом."
+      end
+    end
+  when 3
     puts "Выход из программы"
     break
   else
