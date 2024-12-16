@@ -31,6 +31,14 @@ def local_minimum?(array, index)
   end
 end
 
+def max_in_range(array)
+  range = array.select{ |i| i >= 3 && i < array.size - 3 }
+  range.max
+end
+
+
+
+
 
 filename = "numbers.txt"
 array, index = read_from_file(filename)
@@ -39,7 +47,8 @@ loop do
   puts "\nВыберите задачу:"
   puts "1. Проверка на глобальный максимум"
   puts "2. Проверка на локальный минимум"
-  puts "2. Выход"
+  puts "3. Максимальный элемент в интервале"
+  puts "4. Выход"
   choice = gets.to_i
 
   case choice
@@ -60,7 +69,14 @@ loop do
       end
     end
   when 3
-    puts "Выход из программы"
+    begin
+      max_value = max_in_range(array)
+      puts "Максимальный элемент в интервале #{max_value}."
+
+    end
+  
+  when 4
+    puts "Выход из программы. Мур-мур~"
     break
   else
     puts "Некорректный выбор. Попробуйте снова"
