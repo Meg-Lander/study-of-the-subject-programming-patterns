@@ -41,6 +41,11 @@ def even_and_odd_indices(array)
   even.flat_map { |x, _| x } + odd.flat_map { |x, _| x }
 end
 
+def create_list_l1_l2(array)
+  l1 = array.uniq
+  l2 = l1.map { |element| array.count(element) }
+  [l1, l2]
+end
 
 
 filename = "numbers.txt"
@@ -52,7 +57,8 @@ loop do
   puts "2. Проверка на локальный минимум"
   puts "3. Максимальный элемент в интервале"
   puts "4. Вывод элементов с чётными и нечётными индексами"
-  puts "5. Выход"
+  puts "5. Переделать массив в списки L1 и L2"
+  puts "6. Выход"
   choice = gets.to_i
 
   case choice
@@ -84,7 +90,11 @@ loop do
       puts "Элементы массива с чётными и нечётными индексами: #{result.inspect}"
     end
   when 5
-    puts "Выход из программы. Мур-мур~"
+    l1, l2 = build_l1_l2(array)
+    puts "Список L1 (уникальные элементы): #{l1.inspect}"
+    puts "Список L2 (количество повторений): #{l2.inspect}"
+  when 6
+    puts "Выход из программы"
     break
   else
     puts "Некорректный выбор. Попробуйте снова"
