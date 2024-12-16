@@ -36,7 +36,10 @@ def max_in_range(array)
   range.max
 end
 
-
+def even_and_odd_indices(array)
+  even, odd = array.each_with_index.partition { |_, index| index.even? }
+  even.flat_map { |x, _| x } + odd.flat_map { |x, _| x }
+end
 
 
 
@@ -48,7 +51,8 @@ loop do
   puts "1. Проверка на глобальный максимум"
   puts "2. Проверка на локальный минимум"
   puts "3. Максимальный элемент в интервале"
-  puts "4. Выход"
+  puts "4. Вывод элементов с чётными и нечётными индексами"
+  puts "5. Выход"
   choice = gets.to_i
 
   case choice
@@ -74,8 +78,12 @@ loop do
       puts "Максимальный элемент в интервале #{max_value}."
 
     end
-  
   when 4
+    begin
+      result = even_and_odd_indices(array)
+      puts "Элементы массива с чётными и нечётными индексами: #{result.inspect}"
+    end
+  when 5
     puts "Выход из программы. Мур-мур~"
     break
   else
