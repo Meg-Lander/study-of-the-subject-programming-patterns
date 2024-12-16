@@ -3,8 +3,8 @@ def read_from_file(filename)
 
   data = File.read(filename).split("\n")
   array = data[0].split.map(&:to_i)
-  index = data[1]
-
+  index = data[1].to_i
+  [array, index]
 end
 
 def global_maximum?(array, index)
@@ -13,11 +13,8 @@ def global_maximum?(array, index)
   array.all? { |num| num <= element } # Проверяем, что все элементы <= текущего
 end
 
-
-
-puts "Введите имя файла для чтения:"
-filename = gets.chomp
-array, extra = read_from_file(filename)
+filename = "numbers.txt"
+array, index = read_from_file(filename)
 
 loop do
   puts "\nВыберите задачу:"
@@ -33,10 +30,13 @@ loop do
       else
         puts "Элемент по индексу #{index} не является глобальным максимумом."
       end
+    rescue ArgumentError => e
+      puts "Ошибка: #{e.message}"
+    end
   when 2
-    puts "Выход из программы. Мур-мур~"
+    puts "Выход из программы"
     break
   else
-    puts "Некорректный выбор. Попробуйте снова, нyaa~!"
+    puts "Некорректный выбор. Попробуйте снова"
   end
 end
