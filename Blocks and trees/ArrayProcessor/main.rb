@@ -17,3 +17,5 @@ puts "Минимальный элемент: #{array_processor.min { |a, b| a < 
 
 truthy, falsy = array_processor.partition { |x| x > 3 }
 puts "Элементы > 3: #{truthy.inspect}, Остальные: #{falsy.inspect}"
+
+puts "Элементы, пока они < 4: #{array_processor.take_while { |x| x < 4 }.inspect}"

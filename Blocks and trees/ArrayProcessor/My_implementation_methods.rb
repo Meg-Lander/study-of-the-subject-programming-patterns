@@ -81,5 +81,15 @@ class Array_processor
     [truthy, falsy]
   end
 
+  def take_while
+    result = []
+    @array.each do |element|
+      break unless yield(element)
+
+      result << element
+    end
+    result
+  end
+
 end
 
