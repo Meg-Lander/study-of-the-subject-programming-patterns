@@ -68,7 +68,18 @@ class Array_processor
     end
   end
 
-  
+  def partition
+    truthy = []
+    falsy = []
+    @array.each do |element|
+      if yield(element)
+        truthy << element
+      else
+        falsy << element
+      end
+    end
+    [truthy, falsy]
+  end
 
 end
 
