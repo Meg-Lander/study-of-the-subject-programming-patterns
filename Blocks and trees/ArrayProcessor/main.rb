@@ -10,3 +10,5 @@ puts "Количество чётных чисел: #{array_processor.count { |x
 
 puts "Квадраты чётных чисел: #{array_processor.filter_map { |x| x * x if x.even? }.inspect}"
 
+
+puts "Группировка по чётности: #{array_processor.group_by { |x| x.even? }}"

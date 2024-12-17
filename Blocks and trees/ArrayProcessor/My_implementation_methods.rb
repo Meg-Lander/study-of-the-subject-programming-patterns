@@ -25,6 +25,15 @@ class Array_processor
     result
   end
 
+  def group_by
+    groups = {}
+    @array.each do |element|
+      key = yield(element)
+      groups[key] ||= []
+      groups[key] << element
+    end
+    groups
+  end
   
 end
 
