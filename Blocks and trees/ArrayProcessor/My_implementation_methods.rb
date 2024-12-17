@@ -16,6 +16,15 @@ class Array_processor
     count
   end
 
+  def filter_map
+    result = []
+    @array.each do |element|
+      value = yield(element)
+      result << value if value
+    end
+    result
+  end
+
   
 end
 
