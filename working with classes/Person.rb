@@ -63,19 +63,7 @@ class Person
     end
   end
 
-  # Методы для отображения информации
-  def contact_info
-    if !@phone.nil? && !@phone.strip.empty?
-      "Телефон: #{@phone}"
-    elsif !@telegram.nil? && !@telegram.strip.empty?
-      "Телеграм: #{@telegram}"
-    elsif !@email.nil? && !@email.strip.empty?
-      "Почта: #{@email}"
-    else
-      nil
-    end
-  end
-
+  
   private
   def phone=(value)
     raise ArgumentError, 'Некорректный номер телефона' unless self.class.phone_valid?(value)
