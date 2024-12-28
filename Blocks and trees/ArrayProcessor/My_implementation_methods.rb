@@ -4,7 +4,6 @@ class Array_processor
     @array = array.freeze # Запрещаем изменение массива
   end
 
-  # Метод для получения элементов массива
   def array
     @array
   end
@@ -35,37 +34,14 @@ class Array_processor
     groups
   end
 
-  def min(value = nil)
-    if !(block_given?) and value.nil?
-      min_elem = self.array[0]
-      self.array[1..].each do |potential_min_elem|
-        if potential_min_elem < min_elem
-          min_elem = potential_min_elem
-        end
-      return min_elem
-
+  def min
+    min_element = nil
+    each do |element|
+      if min_element.nil? || (block_given? ? yield(element, min_element) < 0 : element <=> min_element < 0)
+        min_element = element
       end
-    
-    elsif !(block_given?) and !(value.nil?)
-      return self.array.sort[0..value-1]
-
-    elsif block_given? and value.nil?
-      min_elem = self.array[0]
-      self.array[1..].each do |potential_min_elem|
-        if yield(potential_min_elem, min_elem) == -1  # elem < min_elem
-          min_elem = potential_min_elem
-        end
-      end
-
-      return min_elem
-
-    elsif block_given? and !(value.nil?)
-      sorted_array = self.array[0..].sort do |a, b|
-       yield(a, b)
-      end
-
-      return sorted_array[0..value-1] 
     end
+    min_element
   end
 
   def partition
