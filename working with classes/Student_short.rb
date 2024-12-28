@@ -2,15 +2,15 @@ require_relative 'Person'
 
 class StudentShort < Person
 
-  attr_reader :surname_initials, :contact
+  attr_reader :contact
 
   # Метод для создания объекта из объекта Student
   def self.new_obj_student_short(student)
     new(
       id: student.id,
-      surname_initials: "#{student.surname} #{student.name[0]}.#{student.middle_name[0]}.",
+      surname_initials: student.initials_name,
       git: student.git,
-      contact: student.contact_info
+      contact: student.phone || student.telegram || student.email
     )
   end
 
@@ -26,22 +26,18 @@ class StudentShort < Person
     )
   end
 
-  def reset_contact(new_contact)
-    @contact = new_contact
-  end
-
   def to_s
     "#{@id} #{@surname_initials} #{@git} #{@contact}"
   end
 
-  
   private_class_method :new
+  private
 
   def initialize(params)
     @id = params[:id]
-    @surname_initials = params[:surname_initials]
+    @surname_initials = initials_name
     @git = params[:git]
     @contact = params[:contact]
   end
-
+  
 end
