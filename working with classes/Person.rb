@@ -40,6 +40,13 @@ class Person
     !@git.nil? && !@git.strip.empty?
   end
   
+  def contact_present?
+    raise NotImplementedError, 'Метод contact_present? должен быть реализован в подклассе'
+  end
+
+  def contact_and_git_present?
+    raise NotImplementedError, 'Метод contact_and_git_present? должен быть реализован в подклассе'
+  end
 
   def initials_name
     "#{@surname} #{@name[0]}.#{@middle_name[0]}."

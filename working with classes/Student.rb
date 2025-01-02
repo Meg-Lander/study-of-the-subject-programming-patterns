@@ -10,7 +10,19 @@ class Student < Person
 
   
   def get_initials_contact
-    "#{initials_name}; GitHub: #{@git}; Связь: #{phone || telegram || email}"
+    "#{initials_name}; GitHub: #{@git}; Связь: #{get_contact}"
+  end
+
+  def get_contact 
+    "#{phone || telegram || email}"
+  end
+
+  def contact_present?
+    [@phone, @telegram, @email].any? { |contact| contact && !contact.strip.empty? }
+  end
+
+  def contact_and_git_present?
+    git_present? || contact_present?
   end
 
   def to_s

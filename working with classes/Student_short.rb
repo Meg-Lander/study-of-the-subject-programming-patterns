@@ -13,7 +13,7 @@ class StudentShort < Person
       contact: student.phone || student.telegram || student.email
     )
   end
-
+  
   # Метод для создания объекта из ID и строки с информацией
   def self.new_string_student_short(id, info)
     parts = info.split(';').map(&:strip)
