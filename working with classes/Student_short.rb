@@ -8,7 +8,7 @@ class StudentShort < Person
   def self.new_obj_student_short(student)
     new(
       id: student.id,
-      surname_initials: student.initials_name,
+      initials_name: student.initials_name,
       git: student.git,
       contact: student.phone || student.telegram || student.email
     )
@@ -20,14 +20,14 @@ class StudentShort < Person
     raise ArgumentError, 'Некорректная строка информации' unless parts.size == 3
     new(
       id: id,
-      surname_initials: parts[0],
+      initials_name: parts[0],
       git: parts[1].sub('GitHub: ', '').strip,
       contact: parts[2].sub('Связь: ', '').strip
     )
   end
 
   def to_s
-    "#{@id} #{@surname_initials} #{@git} #{@contact}"
+    "#{@id} #{@initials_name} #{@git} #{@contact}"
   end
 
   private_class_method :new
@@ -35,7 +35,7 @@ class StudentShort < Person
 
   def initialize(params)
     @id = params[:id]
-    @surname_initials = initials_name
+    @initials_name = initials_name
     @git = params[:git]
     @contact = params[:contact]
   end

@@ -57,6 +57,18 @@ class Student < Person
 
   private
 
+  def surname=(names)
+    super(names)
+  end
+
+  def middle_name=(names)
+    super(names)
+  end
+
+  def name=(names)
+    super(names)
+  end
+
   def phone=(value)
     raise ArgumentError, 'Некорректный номер телефона' unless self.class.phone_valid?(value)
     @phone = value
