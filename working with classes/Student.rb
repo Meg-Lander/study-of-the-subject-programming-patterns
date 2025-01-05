@@ -55,8 +55,6 @@ class Student < Person
     email.to_s.match?(/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i)
   end
 
-  private
-
   def surname=(names)
     super(names)
   end
@@ -68,6 +66,8 @@ class Student < Person
   def name=(names)
     super(names)
   end
+
+  private
 
   def phone=(value)
     raise ArgumentError, 'Некорректный номер телефона' unless self.class.phone_valid?(value)
