@@ -1,4 +1,6 @@
 require_relative 'Person'
+require_relative 'binary_tree'
+
 
 class Student < Person
   attr_reader :phone, :telegram, :email
@@ -6,6 +8,7 @@ class Student < Person
   def initialize(params)
     super(params)
     set_contacts(params)
+    self.birth_date = params[:birth_date] if params[:birth_date]
   end
 
   
@@ -26,7 +29,7 @@ class Student < Person
   end
 
   def to_s
-    "#{@id} #{@surname} #{@name} #{@middle_name}\nGit: #{@git}\nДанные для связи:\nНомер телефона: #{@phone}\nТелеграм: #{@telegram}\nEmail: #{@email}\n\n"
+    "#{@id} #{@surname} #{@name} #{@middle_name}\nGit: #{@git}\nДанные для связи:\nНомер телефона: #{@phone}\nТелеграм: #{@telegram}\nEmail: #{@email}\nДата рождения: #{@birth_date}\n\n"
   end
 
   def set_contacts(contacts = {})
@@ -53,6 +56,15 @@ class Student < Person
 
   def self.email_valid?(email)
     email.to_s.match?(/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i)
+  end
+
+  def self.birth_date_valid?(date)
+    Date.parse(date) rescue false
+  end
+
+  def birth_date=(date)
+    raise ArgumentError, 'Некорректная дата рождения' unless self.class.birth_date_valid?(date)
+    @birth_date = Date.parse(date)
   end
 
   def surname=(names)
