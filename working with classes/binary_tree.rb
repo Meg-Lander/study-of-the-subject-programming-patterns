@@ -1,6 +1,6 @@
 require 'date'
 require_relative 'student'
-require_relative 'node'
+require_relative 'Node'
 
 class Binary_tree
   include Enumerable
