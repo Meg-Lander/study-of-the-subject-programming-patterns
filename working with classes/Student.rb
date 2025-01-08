@@ -16,10 +16,6 @@ class Student < Person
     "#{initials_name}; GitHub: #{@git}; Связь: #{get_contact}"
   end
 
-  def get_contact 
-    "#{phone || telegram || email}"
-  end
-
   def contact_present?
     [@phone, @telegram, @email].any? { |contact| contact && !contact.strip.empty? }
   end
