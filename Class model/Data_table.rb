@@ -6,6 +6,10 @@ class Data_table
     self.data = data
   end
 
+  def get_element(row, col)
+    self.data[row][col]
+  end
+
   def num_rows
     self.data.size
   end
