@@ -2,6 +2,8 @@ require_relative 'Person'
 
 class StudentShort < Person
 
+  attr_reader :contact
+
   # Метод для создания объекта из объекта Student
   def self.new_obj_student_short(student)
     new(

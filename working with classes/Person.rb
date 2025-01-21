@@ -40,8 +40,8 @@ class Person
     !@git.nil? && !@git.strip.empty?
   end
 
-  def get_contact 
-    "#{phone || telegram || email}"
+  def contact 
+    raise NotImplementedError, 'Метод contact должен быть реализован в подклассе'
   end
   
   def contact_present?
