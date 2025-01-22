@@ -35,7 +35,7 @@ class StudentShort < Person
 
   def initialize(params)
     @id = params[:id]
-    @initials_name = initials_name
+    @initials_name = params[:initials_name]
     @git = params[:git]
     @contact = params[:contact]
   end

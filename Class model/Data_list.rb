@@ -1,9 +1,13 @@
 class Data_list
-  attr_reader :elements
-  private :elements
+  attr_accessor :elements
 
   def initialize(elements)
-    self.elements = elements.freeze
+    self.elements = elements
+  end
+
+  # Сеттер для массива объектов
+  def elements=(new_elements)
+    @elements = new_elements.freeze
   end
 
   def elements=(new_elements)

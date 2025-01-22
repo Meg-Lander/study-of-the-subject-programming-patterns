@@ -53,24 +53,24 @@ class Person
   end
 
   def initials_name
-    "#{@surname} #{@name[0]}.#{@middle_name[0]}."
+    "#{@surname} #{@name}.#{@middle_name}."
   end
 
   
   private
   
   def surname=(names)
-    raise ArgumentError, 'Некорректный ID' unless self.name_valid?(names)
+    raise ArgumentError, 'Некорректный ID' unless self.class.name_valid?(names)
     @surname = names
   end
 
   def middle_name=(names)
-    raise ArgumentError, 'Некорректный ID' unless self.name_valid?(names)
+    raise ArgumentError, 'Некорректный ID' unless self.class.name_valid?(names)
     @middle_name = names
   end
 
   def name=(names)
-    raise ArgumentError, 'Некорректный ID' unless self.name_valid?(names)
+    raise ArgumentError, 'Некорректный ID' unless self.class.name_valid?(names)
     @name = names
   end
 end
