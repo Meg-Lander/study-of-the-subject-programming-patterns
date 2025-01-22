@@ -5,13 +5,8 @@ class Data_list
     self.elements = elements
   end
 
-  # Сеттер для массива объектов
   def elements=(new_elements)
     @elements = new_elements.freeze
-  end
-
-  def elements=(new_elements)
-    @elements = new_elements
   end
 
   def select(number)
@@ -41,6 +36,10 @@ class Data_list
     Data_table.new(data)
   end
 
+  def to_s
+    elements.join(", ")
+  end
+
   private
 
   def attribute_names
@@ -49,9 +48,5 @@ class Data_list
 
   def extract_attributes(element)
     raise NotImplementedError, "Метод 'extract_attributes' должен быть переопределён в наследнике"
-  end
-
-  def to_s
-    elements.join(", ")
   end
 end

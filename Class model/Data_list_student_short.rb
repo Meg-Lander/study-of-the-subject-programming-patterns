@@ -1,5 +1,6 @@
 require_relative 'data_list'
 require_relative 'data_table'
+require_relative 'Student_short'
 
 class Data_list_student_short < Data_list
   def attribute_names

@@ -36,6 +36,5 @@ new_students = [
 ]
 data_list.elements = new_students 
 
-# Проверка: массив студентов после замены
 puts "После замены элементов:"
 puts data_list.get_data
