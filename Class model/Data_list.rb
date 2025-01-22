@@ -27,14 +27,27 @@ class Data_list
   end
 
   def get_names
-    raise NotImplementedError, "Должно быть переопределено в наследнике"
+    ["№"] + attribute_names
   end
 
   def get_data
-    raise NotImplementedError, "Должно быть переопределено в наследнике"
+    data = elements.map.with_index do |element, index|
+      [index + 1] + extract_attributes(element)
+    end
+    Data_table.new(data)
+  end
+
+  private
+
+  def attribute_names
+    raise NotImplementedError, "Метод 'attribute_names' должен быть переопределён в наследнике"
+  end
+
+  def extract_attributes(element)
+    raise NotImplementedError, "Метод 'extract_attributes' должен быть переопределён в наследнике"
   end
 
   def to_s
-    self.elements.join(", ")
+    elements.join(", ")
   end
 end
