@@ -1,0 +1,13 @@
+---
+- :id: 1
+  :surname: Иванов
+  :name: Иван
+  :middle_name: Иванович
+  :git: github.com/ivanov
+  :contact: ivanov@example.com
+- :id: 3
+  :surname: Сидоров
+  :name: Сидор
+  :middle_name: Сидорович
+  :git: github.com/sidorov
+  :contact: sidorov@example.com
