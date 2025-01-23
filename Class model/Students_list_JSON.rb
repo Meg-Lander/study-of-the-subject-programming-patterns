@@ -13,31 +13,16 @@ class Students_list_JSON
   end
 
   # Чтение всех значений из файла
-  def read_students
-    return [] unless File.exist?(file_path) # Если файл не существует, возвращаем пустой массив
-
-    file_content = File.read(file_path)
-    JSON.parse(file_content, symbolize_names: true)
-  rescue JSON::ParserError => e
-    raise "Ошибка парсинга файла JSON: #{e.message}"
+  def write_students(students)
+    File.open(@file_name, 'w') do |file|
+      file.write(students.to_json)
+    end
   end
 
-  # Запись всех значений в файл
-  def write_students(students)
-    json_data = students.map do |student|
-      {
-        id: student.id,
-        surname: student.surname,
-        name: student.name,
-        middle_name: student.middle_name,
-        git: student.git,
-        contact: student.contact
-      }
-    end
-
-    File.write(file_path, JSON.pretty_generate(json_data))
-  rescue IOError => e
-    raise "Ошибка записи в файл: #{e.message}"
+  # Чтение студентов из файла
+  def read_students
+    return [] unless File.exist?(@file_name)
+    JSON.parse(File.read(@file_name), symbolize_names: true)
   end
 
   # Получение объекта Student по ID
@@ -130,26 +115,21 @@ class Students_list_JSON
     write_students(students_data)
   end
 
-  def delete_student_by_id(id)
-    students_data = read_students
-
-    # Найти индекс элемента с указанным ID
-    index = students_data.find_index { |student| student[:id] == id }
-    raise "Студент с ID #{id} не найден" unless index
-
-    # Удалить элемент
-    students_data.delete_at(index)
-
-    # Сохранить изменения
-    write_students(students_data)
-
-    true # Возвращаем true, если успешно удалено
+  def get_student_short_count
+    students = read_students
+    students.size
   end
 
-  # Получение количества элементов
-  def get_student_short_count
-    students_data = read_students
-    students_data.size
+  # Удалить студента по ID
+  def delete_student_by_id(student_id)
+    students = read_students
+    student = students.find { |s| s[:id] == student_id }
+    if student
+      students.delete(student)
+      write_students(students)
+    else
+      raise "Студент с ID = #{student_id} не найден"
+    end
   end
   
 end
