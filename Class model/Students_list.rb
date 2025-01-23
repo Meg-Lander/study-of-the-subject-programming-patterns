@@ -3,22 +3,24 @@ require_relative 'data_table'
 require_relative 'Student_short'
 require_relative 'Data_list_student_short'
 require_relative 'Student'
+require_relative 'strategy_list_file'
 require 'json'
 require 'yaml'
 
-class StudentsList
-  attr_reader :file_path
+class Students_list
+  attr_reader :file_path, :file_strategy
 
-  def initialize(file_path)
+  def initialize(file_path, file_strategy)
     @file_path = file_path
+    @file_strategy = file_strategy
   end
 
   def read_students
-    raise NotImplementedError, "This method should be overridden in subclasses"
+    file_strategy.read(file_path)
   end
 
   def write_students(students)
-    raise NotImplementedError, "This method should be overridden in subclasses"
+    file_strategy.write(file_path, students)
   end
 
   def find_student_by_id(id)
@@ -48,18 +50,15 @@ class StudentsList
 
   def sort_by_surname_and_initials
     students_data = read_students
-
     sorted_students = students_data.sort_by do |student|
       "#{student[:surname]} #{student[:name][0]}.#{student[:middle_name][0]}."
     end
-
     write_students(sorted_students)
     sorted_students
   end
 
   def add_student(new_student)
     students_data = read_students
-
     max_id = students_data.map { |student| student[:id] }.max || 0
     new_id = max_id + 1
 
@@ -80,7 +79,6 @@ class StudentsList
 
   def replace_student_by_id(id, updated_student)
     students_data = read_students
-
     index = students_data.find_index { |student| student[:id] == id }
     raise "Студент с ID #{id} не найден" unless index
 
@@ -97,18 +95,18 @@ class StudentsList
   end
 
   def get_student_short_count
-    students = read_students
-    students.size
+    read_students.size
   end
 
   def delete_student_by_id(student_id)
-    students = read_students
-    student = students.find { |s| s[:id] == student_id }
+    students_data = read_students
+    student = students_data.find { |s| s[:id] == student_id }
     if student
-      students.delete(student)
-      write_students(students)
+      students_data.delete(student)
+      write_students(students_data)
     else
       raise "Студент с ID = #{student_id} не найден"
     end
   end
 end
+
