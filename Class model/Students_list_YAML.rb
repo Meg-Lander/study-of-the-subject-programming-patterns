@@ -11,7 +11,6 @@ class Students_list_YAML
     @file_path = file_path
   end
 
-  # Чтение всех значений из файла
   def read_students
     return [] unless File.exist?(@file_path)
 
@@ -20,7 +19,6 @@ class Students_list_YAML
     raise "Ошибка при чтении файла: #{e.message}"
   end
 
-  # Запись всех значений в файл
   def write_students(students)
     File.open(@file_path, 'w') { |file| file.write(students.to_yaml) }
   rescue StandardError => e
@@ -41,7 +39,6 @@ class Students_list_YAML
   def get_k_n_student_short_list(k, n, existing_data_list = nil)
     students_data = read_students
 
-    # Выбираем элементы: с k*n до k*(n+1), не выходя за пределы массива
     start_index = k * n
     end_index = start_index + k - 1
 
@@ -49,7 +46,6 @@ class Students_list_YAML
       StudentShort.new_obj_student_short(Student.new(student_data))
     end
 
-    # Создаём новый объект Data_list или обновляем существующий
     if existing_data_list
       existing_data_list.elements = selected_students
       existing_data_list
@@ -66,11 +62,9 @@ class Students_list_YAML
     write_students(sorted_data)
   end
 
-  # Добавить объект класса Student в список
   def add_student(student)
     students_data = read_students
 
-    # Генерация нового уникального ID
     new_id = (students_data.map { |s| s[:id] }.max || 0) + 1
     student_data = {
       id: new_id,
@@ -89,7 +83,6 @@ class Students_list_YAML
     new_id
   end
 
-  # Заменить элемент списка по ID
   def replace_student_by_id(id, new_student)
     students_data = read_students
 
@@ -123,7 +116,6 @@ class Students_list_YAML
     write_students(updated_data)
   end
 
-  # Получить количество элементов
   def get_student_short_count
     read_students.size
   end

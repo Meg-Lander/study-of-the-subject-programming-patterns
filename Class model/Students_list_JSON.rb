@@ -8,24 +8,21 @@ require_relative 'Student'
 class Students_list_JSON
   attr_reader :file_path
 
-  def initialize(file_path)
-    @file_path = file_path
+  def initialize(file_name)
+    @file_name = file_name
   end
 
-  # Чтение всех значений из файла
   def write_students(students)
     File.open(@file_name, 'w') do |file|
       file.write(students.to_json)
     end
   end
 
-  # Чтение студентов из файла
   def read_students
     return [] unless File.exist?(@file_name)
     JSON.parse(File.read(@file_name), symbolize_names: true)
   end
 
-  # Получение объекта Student по ID
   def find_student_by_id(id)
     students_data = read_students
     student_data = students_data.find { |student| student[:id] == id }
@@ -39,24 +36,19 @@ class Students_list_JSON
     students_data = read_students
     total_students = students_data.size
 
-    # Вычисление индексов начала и конца для выборки
     start_index = (k - 1) * n
     end_index = [start_index + n - 1, total_students - 1].min
 
-    # Если нет существующего data_list, создаем новый
     data_list ||= Data_list_student_short.new([])
 
-    # Выбираем нужные записи и преобразуем их в объекты Student_short
     selected_students = students_data[start_index..end_index].map do |student_data|
       StudentShort.new_obj_student_short(Student.new(student_data))
     end
 
-    # Обновляем данные в data_list
     data_list.elements = selected_students
     data_list
   end
 
-  # Сортировка элементов по фамилии и инициалам
   def sort_by_surname_and_initials
     students_data = read_students
 
@@ -68,15 +60,12 @@ class Students_list_JSON
     sorted_students
   end
 
-  # Добавление объекта Student в список
   def add_student(new_student)
     students_data = read_students
 
-    # Генерация нового уникального ID
     max_id = students_data.map { |student| student[:id] }.max || 0
     new_id = max_id + 1
 
-    # Создание записи нового студента
     new_student_data = {
       id: new_id,
       surname: new_student.surname,
@@ -86,22 +75,18 @@ class Students_list_JSON
       contact: new_student.phone || new_student.telegram || new_student.email
     }
 
-    # Добавление и запись обновленного списка
     students_data << new_student_data
     write_students(students_data)
 
     new_id
   end
 
-  # Замена элемента списка по ID
   def replace_student_by_id(id, updated_student)
     students_data = read_students
 
-    # Поиск индекса студента с нужным ID
     index = students_data.find_index { |student| student[:id] == id }
     raise "Студент с ID #{id} не найден" unless index
 
-    # Обновление данных студента
     students_data[index] = {
       id: id,
       surname: updated_student.surname,
@@ -111,7 +96,6 @@ class Students_list_JSON
       contact: updated_student.phone || updated_student.telegram || updated_student.email
     }
 
-    # Запись изменений
     write_students(students_data)
   end
 
@@ -120,7 +104,6 @@ class Students_list_JSON
     students.size
   end
 
-  # Удалить студента по ID
   def delete_student_by_id(student_id)
     students = read_students
     student = students.find { |s| s[:id] == student_id }
