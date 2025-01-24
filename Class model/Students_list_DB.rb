@@ -52,40 +52,54 @@ class Students_list_DB
       )
     end
 
-    data_list ||= DataListStudentShort.new([])
+    data_list ||= Data_list_student_short.new([])
     data_list.elements = students
     data_list
   end
 
   # c. Добавить объект класса Student в список (при добавлении сформировать новый ID)
   def add_student(new_student)
-    result = @conn.exec_params(
-      'INSERT INTO students (surname, name, middle_name, git, contact) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-      [
-        new_student.surname,
-        new_student.name,
-        new_student.middle_name,
-        new_student.git,
-        new_student.contact
-      ]
-    )
-    result[0]['id'].to_i
-  end
+  conn = PG.connect(dbname: 'student_db', user: 'postgres', password: '123')
+
+  result = conn.exec_params(
+    'INSERT INTO students (surname, name, middle_name, git, phone, email, telegram) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+    [
+      new_student.surname,
+      new_student.name,
+      new_student.middle_name,
+      new_student.git,
+      new_student.phone,
+      new_student.email,
+      new_student.telegram
+    ]
+  )
+
+  conn.close
+  result[0]['id'].to_i
+end
+
 
   # d. Заменить элемент списка по ID
   def replace_student_by_id(id, updated_student)
-    @conn.exec_params(
-      'UPDATE students SET surname = $1, name = $2, middle_name = $3, git = $4, contact = $5 WHERE id = $6',
-      [
-        updated_student.surname,
-        updated_student.name,
-        updated_student.middle_name,
-        updated_student.git,
-        updated_student.contact,
-        id
-      ]
-    )
-  end
+  conn = PG.connect(dbname: 'student_db', user: 'postgres', password: '123')
+
+  conn.exec_params(
+    'UPDATE students SET surname = $1, name = $2, middle_name = $3, git = $4, phone = $5, email = $6, telegram = $7 WHERE id = $8',
+    [
+      updated_student.surname,
+      updated_student.name,
+      updated_student.middle_name,
+      updated_student.git,
+      updated_student.phone,
+      updated_student.email,
+      updated_student.telegram,
+      id
+    ]
+  )
+
+  conn.close
+end
+
 
   # e. Удалить элемент списка по ID
   def delete_student_by_id(id)
