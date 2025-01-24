@@ -6,6 +6,7 @@ require_relative 'Person'
 require_relative 'Data_list_student_short'
 require 'pg'
 require_relative 'Students_list_DB'
+require_relative 'Database_manager'
 
 
 # student = Student.new(
@@ -42,24 +43,44 @@ require_relative 'Students_list_DB'
 # puts data_list.get_data
 
 
-db_params = { host: 'localhost', dbname: 'student_db', user: 'postgres', password: '123' }
-students_list_db = Students_list_DB.new(db_params)
 
-student = students_list_db.get_student_by_id(1)
-puts student.surname
+db_params = {
+  dbname: 'student_db',
+  user: 'postgres',
+  password: '123',
+  host: 'localhost'
+}
 
-data_list = students_list_db.get_k_n_student_short_list(1, 10)  # Получить студентов с 1 по 10
-puts "#{data_list}"
+db_manager1 = Database_manager.instance(db_params)
 
-new_student = Student.new(surname: 'Иванов', name: 'Иван', middle_name: 'Иванович', git: 'github.com/ivanov', email: 'email@domain.com')
-new_student_id = students_list_db.add_student(new_student)
-puts "New student ID: #{new_student_id}"
+db_manager2 = Database_manager.instance(db_params)
 
-updated_student = Student.new(surname: 'Петров', name: 'Петр', middle_name: 'Петрович', git: 'github.com/petrov', email: 'petrov@mail.com')
-students_list_db.replace_student_by_id(1, updated_student)
+puts db_manager1.object_id == db_manager2.object_id
 
-students_list_db.delete_student_by_id(2)
+db_manager1.execute_query('SELECT COUNT(*) FROM students') do |result|
+  puts "Количество студентов: #{result[0]['count']}"
+end
 
-puts "Количество студентов: #{students_list_db.get_student_count}"
+students_db = Students_list_DB.new
 
-students_list_db.close
+new_student = Student.new(
+  surname: 'Иванов',
+  name: 'Иван',
+  middle_name: 'Иванович',
+  git: 'github.com/ivanov',
+  phone: '+79991234567',
+  email: 'ivanov@example.com',
+  telegram: '@ivanov'
+)
+id = students_db.add_student(new_student)
+puts "Добавлен студент с ID: #{id}"
+
+student = students_db.get_student_by_id(id)
+puts "Получен студент: #{student}"
+
+
+db_manager1.close
+
+db_manager3 = Database_manager.instance(db_params)
+puts db_manager1.object_id == db_manager3.object_id # false (новое подключение)
+
