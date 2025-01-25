@@ -25,6 +25,35 @@ class Database_manager
     @conn.exec_params(query, params)
   end
 
+  def create_table()
+    begin
+    @conn.exec(
+      "
+      create table Student
+      (
+        id Number,
+        last_name Varchar2(100),
+        first_name Varchar2(100),
+        surname Varchar2(100),
+        github Varchar2(100),
+        phone Varchar2(17),
+        mail Varchar2(100)
+      )
+      "
+    )
+    rescue => e
+      puts e
+    end
+  end
+
+  def drop_table()
+    begin
+      @conn.exe('drop table Student')
+      @conn.commit
+    rescue => e
+      puts e
+    end
+
   def close
     @conn.close
     puts "Подключение к базе данных закрыто."
