@@ -8,7 +8,6 @@ class Student < Person
   def initialize(params)
     super(params)
     set_contacts(params)
-    self.birth_date = params[:birth_date] if params[:birth_date]
   end
 
   
@@ -58,13 +57,25 @@ class Student < Person
     email.to_s.match?(/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i)
   end
 
-  def self.birth_date_valid?(date)
-    Date.parse(date) rescue false
+  def ==(other)
+    return false unless other.is_a?(Student)
+
+    [:git, :phone, :email, :telegram].any? do |attribute|
+      !self.send(attribute).nil? && self.send(attribute) == other.send(attribute)
+    end
   end
 
-  def birth_date=(date)
-    raise ArgumentError, 'Некорректная дата рождения' unless self.class.birth_date_valid?(date)
-    @birth_date = Date.parse(date)
+  
+  def to_h
+    {
+      surname: surname,
+      name: name,
+      middle_name: middle_name,
+      git: git,
+      phone: phone,
+      email: email,
+      telegram: telegram
+    }
   end
 
   def surname=(names)

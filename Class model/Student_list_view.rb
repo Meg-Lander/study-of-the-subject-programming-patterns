@@ -2,161 +2,258 @@ require 'fox16'
 include Fox
 
 class StudentListView < FXMainWindow
+  attr_reader :current_page, :items_per_page
+
   def initialize(app)
-    super(app, "Список студентов", width: 800, height: 500)
-    
-    main_frame = FXVerticalFrame.new(self, LAYOUT_FILL_X | LAYOUT_FILL_Y)
+    super(app, "Student list", width: 1200, height: 600)
+    @filters = {}
+    @current_page = 0
+    @items_per_page = 20
+    @total_pages = 3 # Временное значение, будет пересчитываться
+    @sort_column = :name
+    @sort_order = :asc
 
+    # Синтетические данные
+    @students = generate_students(50)
 
-    filter_frame = FXMatrix.new(main_frame, 2, MATRIX_BY_COLUMNS | LAYOUT_FILL_X)
-
-
-    FXLabel.new(filter_frame, "ФИО: ")
-    @filter_name = FXTextField.new(filter_frame, 20)
-
-
-    @git_label = FXLabel.new(filter_frame, "Git: ")
-    @git_combo = FXComboBox.new(filter_frame, 3, opts: COMBOBOX_STATIC | LAYOUT_FILL_X)
-    @git_combo.appendItem("Не важно")
-    @git_combo.appendItem("Да")
-    @git_combo.appendItem("Нет")
-    @git_combo.numVisible = 3
-    @git_field = FXTextField.new(filter_frame, 20, opts: TEXTFIELD_NORMAL | LAYOUT_FILL_X)
-    @git_field.enabled = false
-
-    @git_combo.connect(SEL_COMMAND) do
-      @git_field.enabled = @git_combo.currentItem == 1
-    end
-
-
-    @email_label = FXLabel.new(filter_frame, "Email: ")
-    @email_combo = FXComboBox.new(filter_frame, 3, opts: COMBOBOX_STATIC | LAYOUT_FILL_X)
-    @email_combo.appendItem("Не важно")
-    @email_combo.appendItem("Да")
-    @email_combo.appendItem("Нет")
-    @email_combo.numVisible = 3
-    @email_field = FXTextField.new(filter_frame, 20, opts: TEXTFIELD_NORMAL | LAYOUT_FILL_X)
-    @email_field.enabled = false
-
-    @email_combo.connect(SEL_COMMAND) do
-      @email_field.enabled = @email_combo.currentItem == 1
-    end
-
-
-    @phone_label = FXLabel.new(filter_frame, "Телефон: ")
-    @phone_combo = FXComboBox.new(filter_frame, 3, opts: COMBOBOX_STATIC | LAYOUT_FILL_X)
-    @phone_combo.appendItem("Не важно")
-    @phone_combo.appendItem("Да")
-    @phone_combo.appendItem("Нет")
-    @phone_combo.numVisible = 3
-    @phone_field = FXTextField.new(filter_frame, 20, opts: TEXTFIELD_NORMAL | LAYOUT_FILL_X)
-    @phone_field.enabled = false
-
-    @phone_combo.connect(SEL_COMMAND) do
-      @phone_field.enabled = @phone_combo.currentItem == 1
-    end
-
-    @tg_label = FXLabel.new(filter_frame, "Telegram: ")
-    @tg_combo = FXComboBox.new(filter_frame, 3, opts: COMBOBOX_STATIC | LAYOUT_FILL_X)
-    @tg_combo.appendItem("Не важно")
-    @tg_combo.appendItem("Да")
-    @tg_combo.appendItem("Нет")
-    @tg_combo.numVisible = 3
-    @tg_field = FXTextField.new(filter_frame, 20, opts: TEXTFIELD_NORMAL | LAYOUT_FILL_X)
-    @tg_field.enabled = false
-
-    @tg_combo.connect(SEL_COMMAND) do
-      @tg_field.enabled = @tg_combo.currentItem == 1
-    end
-
-    FXButton.new(filter_frame, "Применить фильтр", opts: BUTTON_NORMAL | LAYOUT_FILL_X).connect(SEL_COMMAND) do
-      apply_filter
-    end
-
-    # --- Таблица студентов ---
-    @table = FXTable.new(main_frame, opts: TABLE_COL_SIZABLE | LAYOUT_FILL_X | LAYOUT_FILL_Y)
-    @table.setTableSize(0, 4)
-    ["ID", "ФИО", "Git", "Контакты"].each_with_index do |header, index|
-      @table.setColumnText(index, header)
-    end
-
-    # Область управления
-    control_frame = FXHorizontalFrame.new(main_frame, LAYOUT_FILL_X)
-    FXButton.new(control_frame, "Добавить").connect(SEL_COMMAND) { add_student }
-    FXButton.new(control_frame, "Редактировать").connect(SEL_COMMAND) { edit_student }
-    FXButton.new(control_frame, "Удалить").connect(SEL_COMMAND) { delete_student }
-    FXButton.new(control_frame, "Закрыть").connect(SEL_COMMAND) { exit_application }
-
-    load_students
+    # Инициализация интерфейса
+    setup_tabs
+    setup_filtration
+    setup_table
+    setup_pagination
+    setup_controls
+    refresh_data
   end
 
-  def apply_filter
-    name_filter = @filter_name.text.strip.downcase
-    git_filter = @git_combo.currentItem == 1 ? @git_field.text.strip.downcase : nil
-    email_filter = @email_combo.currentItem == 1 ? @email_field.text.strip.downcase : nil
-    phone_filter = @phone_combo.currentItem == 1 ? @phone_field.text.strip.downcase : nil
-    tg_filter = @tg_combo.currentItem == 1 ? @tg_field.text.strip.downcase : nil
+  private
 
-    @table.clearItems
-    @table.setTableSize(0, 4)
+  # Генерация синтетических данных
+  def generate_students(count)
+    students = []
+    count.times do |i|
+      students << {
+        id: i + 1,
+        name: "Студент #{i + 1}",
+        git: "git#{i + 1}",
+        email: "student#{i + 1}@example.com",
+        phone: "+791500000#{i.to_s.rjust(2, '0')}",
+        telegram: "@student#{i + 1}"
+      }
+    end
+    students
+  end
 
-    # Пример данных
-    students = [
-      { id: "1", name: "Иванов Иван", git: "ivanov_git", email: "ivanov@mail.com", phone: "123456", tg: "@ivanov" },
-      { id: "2", name: "Петров Петр", git: "petrov_git", email: "petrov@mail.com", phone: "654321", tg: "@petrov" }
-    ]
+  # Настройка вкладок
+  def setup_tabs
+    tab_book = FXTabBook.new(self, nil, 0, LAYOUT_FILL_X | LAYOUT_FILL_Y)
 
-    filtered_students = students.select do |student|
-      (name_filter.empty? || student[:name].downcase.include?(name_filter)) &&
-      (git_filter.nil? || student[:git].downcase.include?(git_filter)) &&
-      (email_filter.nil? || student[:email].downcase.include?(email_filter)) &&
-      (phone_filter.nil? || student[:phone].downcase.include?(phone_filter)) &&
-      (tg_filter.nil? || student[:tg].downcase.include?(tg_filter))
+    # Первая вкладка (основная)
+    tab1 = FXTabItem.new(tab_book, " Студенты ", nil)
+    @main_frame = FXVerticalFrame.new(tab_book, LAYOUT_FILL_X | LAYOUT_FILL_Y)
+
+    # Заглушки для остальных вкладок
+    FXTabItem.new(tab_book, " Вкладка 2 ", nil)
+    FXVerticalFrame.new(tab_book, LAYOUT_FILL_X | LAYOUT_FILL_Y)
+    FXTabItem.new(tab_book, " Вкладка 3 ", nil)
+    FXVerticalFrame.new(tab_book, LAYOUT_FILL_X | LAYOUT_FILL_Y)
+  end
+
+  # Настройка фильтрации
+  def setup_filtration
+    filter_frame = FXVerticalFrame.new(@main_frame, LAYOUT_FILL_X)
+
+    # Фильтр по ФИО
+    name_frame = FXHorizontalFrame.new(filter_frame, LAYOUT_FILL_X)
+    FXLabel.new(name_frame, "ФИО:", opts: LAYOUT_FIX_WIDTH, width: 80)
+    @name_input = FXTextField.new(name_frame, 30, opts: LAYOUT_FILL_X)
+
+    # Фильтры для Git/Email/Телефона/Telegram
+    [
+      ["Git:",     :git],
+      ["Почта:",   :email],
+      ["Телефон:", :phone],
+      ["Telegram:", :telegram]
+    ].each do |label, key|
+      setup_filter_section(filter_frame, label, key)
     end
 
-    # Заполняем таблицу отфильтрованными данными
-    @table.appendRows(filtered_students.size)
-    filtered_students.each_with_index do |student, i|
-      @table.setItemText(i, 0, student[:id])
+    # Кнопки "Сбросить" и "Применить фильтр" в одной строке
+    button_frame = FXHorizontalFrame.new(filter_frame, LAYOUT_FILL_X | PACK_UNIFORM_WIDTH)
+    FXButton.new(button_frame, "Сбросить", opts: BUTTON_NORMAL | LAYOUT_FILL_X).connect(SEL_COMMAND) do
+      reset_filters
+    end
+    FXButton.new(button_frame, "Применить фильтр", opts: BUTTON_NORMAL | LAYOUT_FILL_X).connect(SEL_COMMAND) do
+      apply_filters
+    end
+  end
+
+  # Настройка секции фильтра
+  def setup_filter_section(parent, label, key)
+    section_frame = FXHorizontalFrame.new(parent, LAYOUT_FILL_X)
+    FXLabel.new(section_frame, label, opts: LAYOUT_FIX_WIDTH, width: 80)
+
+    combo_box = FXComboBox.new(section_frame, 3, opts: COMBOBOX_STATIC | LAYOUT_FILL_X)
+    combo_box.appendItem("Да")
+    combo_box.appendItem("Нет")
+    combo_box.appendItem("Не важно")
+    combo_box.setCurrentItem(2)
+
+    input_field = FXTextField.new(section_frame, 30, opts: TEXTFIELD_NORMAL | LAYOUT_FILL_X)
+    input_field.enabled = false
+
+    combo_box.connect(SEL_COMMAND) do
+      input_field.enabled = (combo_box.currentItem == 0)
+      input_field.text = "" unless input_field.enabled?
+    end
+
+    @filters[key] = { combo: combo_box, field: input_field }
+  end
+
+  # Настройка таблицы
+  def setup_table
+    @table = FXTable.new(@main_frame, opts: TABLE_READONLY | LAYOUT_FILL_X | LAYOUT_FILL_Y)
+    @table.setTableSize(@items_per_page, 6)
+
+    # Обработчик клика только для колонки с ФИО (колонка 1)
+    @table.columnHeader.connect(SEL_COMMAND) do |sender, sel, column|
+      if column == 1 # Колонка с ФИО
+        @sort_order = @sort_order == :asc ? :desc : :asc
+        refresh_data
+      end
+    end
+
+    set_table_params(['name', 'git', 'email', 'phone', 'telegram'], @students.size)
+  end
+
+
+  # Метод для настройки параметров таблицы
+  def set_table_params(column_names, whole_entities_count)
+    display_names = {
+      
+      'name' => 'ФИО',
+      'git' => 'Git',
+      'email' => 'Почта',
+      'phone' => 'Телефон',
+      'telegram' => 'Telegram'
+    }
+    @table.setColumnText(0, "№")
+    column_names.each_with_index do |name, id|
+      display_name = display_names[name] || name
+      @table.setColumnText(id + 1, display_name)
+    end
+    @table.setColumnWidth(0, 30)
+    @table.setColumnWidth(1, 200)
+    @table.setColumnWidth(2, 150)
+    @table.setColumnWidth(3, 200)
+    @table.setColumnWidth(4, 150)
+    @table.setColumnWidth(5, 150)
+  end
+
+  # Настройка пагинации
+  def setup_pagination
+    nav_frame = FXHorizontalFrame.new(@main_frame, LAYOUT_CENTER_X)
+    @prev_button = FXButton.new(nav_frame, "←", opts: BUTTON_NORMAL)
+    @page_label = FXLabel.new(nav_frame, "1")
+    @next_button = FXButton.new(nav_frame, "→", opts: BUTTON_NORMAL)
+
+    @prev_button.connect(SEL_COMMAND) { change_page(-1) }
+    @next_button.connect(SEL_COMMAND) { change_page(1) }
+  end
+
+  # Настройка кнопок управления
+  def setup_controls
+    control_frame = FXHorizontalFrame.new(@main_frame, LAYOUT_FILL_X | PACK_UNIFORM_WIDTH)
+    %w[Добавить Изменить Удалить Закрыть].each do |btn|
+      FXButton.new(control_frame, btn, opts: BUTTON_NORMAL | LAYOUT_FILL_X).connect(SEL_COMMAND) do
+        case btn
+        when "Закрыть" then exit_application
+        else handle_action(btn)
+        end
+      end
+    end
+  end
+
+  # Закрытие приложения
+  def exit_application
+    getApp.exit
+  end
+
+  # Применение фильтров
+  def apply_filters
+    name_filter = @name_input.text.strip.downcase
+    
+    filtered = @students.select do |s|
+      (name_filter.empty? || s[:name].downcase.include?(name_filter)) &&
+      apply_contact_filter(s, :git) &&
+      apply_contact_filter(s, :email) &&
+      apply_contact_filter(s, :phone) &&
+      apply_contact_filter(s, :telegram)
+    end
+
+    @students = filtered
+    @current_page = 0
+    refresh_data
+  end
+
+  # Обновление данных в таблице
+  def refresh_data
+    # Сортировка только по имени
+    sorted_students = @students.sort_by { |s| s[:name].downcase }
+    sorted_students.reverse! if @sort_order == :desc
+
+    # Пагинация
+    start_index = @current_page * @items_per_page
+    end_index = start_index + @items_per_page
+    current_students = sorted_students[start_index...end_index] || []
+    
+    # Обновление таблицы
+    @table.clearItems
+    @table.setTableSize(@items_per_page, 6)
+
+    current_students.each_with_index do |student, i|
+      @table.setItemText(i, 0, (start_index + i + 1).to_s)
       @table.setItemText(i, 1, student[:name])
       @table.setItemText(i, 2, student[:git])
       @table.setItemText(i, 3, student[:email])
+      @table.setItemText(i, 4, student[:phone])
+      @table.setItemText(i, 5, student[:telegram])
     end
-
-    puts "Фильтр применён: ФИО=#{name_filter}, Git=#{git_filter}, Email=#{email_filter}, Телефон=#{phone_filter}, Telegram=#{tg_filter}"
+    
+    set_table_params(['name', 'git', 'email', 'phone', 'telegram'], @students.size)
+    @page_label.text = "#{@current_page + 1}/#{(sorted_students.size.to_f / @items_per_page).ceil}"
   end
 
-
-  # Метод для загрузки студентов (заглушка)
-  def load_students
-    @table.appendRows(2)
-    @table.setItemText(0, 0, "1")
-    @table.setItemText(0, 1, "Иванов Иван")
-    @table.setItemText(0, 2, "ivanov_git")
-    @table.setItemText(0, 3, "ivanov@mail.com")
-
-    @table.setItemText(1, 0, "2")
-    @table.setItemText(1, 1, "Петров Петр")
-    @table.setItemText(1, 2, "petrov_git")
-    @table.setItemText(1, 3, "petrov@mail.com")
+  def apply_contact_filter(student, key)
+    combo = @filters[key][:combo]
+    field = @filters[key][:field]
+    
+    case combo.currentItem
+    when 0 # Да
+      student[key]&.downcase&.include?(field.text.strip.downcase)
+    when 1 # Нет
+      student[key].nil? || student[key].empty?
+    else   # Не важно
+      true
+    end
+  end
+  # Сброс фильтров
+  def reset_filters
+    @name_input.text = ""
+    @filters.each_value { |f| f[:field].text = "" }
+    refresh_data
   end
 
-  # Заглушки для кнопок
-  def add_student
-    puts "Добавление студента"
+  # Обработка действий (заглушка)
+  def handle_action(action)
+    puts "Действие: #{action}"
   end
 
-  def edit_student
-    puts "Редактирование студента"
-  end
-
-  def delete_student
-    puts "Удаление студента"
-  end
-
-  # Метод для закрытия окна
-  def exit_application
-    getApp().exit
+  # Переключение страниц
+  def change_page(delta)
+    new_page = @current_page + delta
+    return if new_page < 0 || new_page >= @total_pages
+    @current_page = new_page
+    refresh_data
   end
 
   def create
@@ -165,6 +262,7 @@ class StudentListView < FXMainWindow
   end
 end
 
+# Запуск приложения
 if __FILE__ == $0
   app = FXApp.new
   StudentListView.new(app)
