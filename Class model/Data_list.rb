@@ -12,7 +12,7 @@ class Data_list
   def select(number)
     self.elements[number]
   end
-
+  
   def get_selected(ids)
     selected_elements = []
 

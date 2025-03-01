@@ -1,6 +1,5 @@
 class Data_table
   attr_accessor :data
-  private :data
 
   def initialize(data)
     self.data = data
